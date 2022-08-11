@@ -60,30 +60,40 @@ server.post("/api/register", (req, res) => {
 })
 
 server.post("/api/login", (req, res) => {
-    users.FindUser(req.body)
-        .then(result => {
-            console.log("success")
-            res.send(`<h1> Welcome ${req.body.username}!</h1>`)
+    if (!req.body.username || !req.body.password) {
+        res.status(500).json({
+            message: "Something odd happened."
         })
-        .catch(() => {
-            res.status(500).json({
-                message: "Something odd happened."
+    } else {
+        users.FindUser(req.body)
+            .then(result => {
+                if (result === false) {
+                    res.status(500).json({
+                        message: "Something odd happened."
+                    })
+                }
+                res.send(`<h1> Welcome ${req.body.username}!</h1>`)
             })
-        })
+            .catch(() => {
+                res.status(500).json({
+                    message: "Something odd happened."
+                })
+            })
+    }
 
 })
 
+
+server.use("/", (req, res) => {
+    res.send(`<h1>Hello, there!</h1>`)
+})
 
 
 /*
-server.use("*", (req, res) => {
-    res.send(`<h1>Hello, there!</h1>`)
-})
-*/
-
 server.use((err, req, res, next) => {
     res.status(500).json({
         message: err.message,
         stack: err.stack
     })
 })
+*/
