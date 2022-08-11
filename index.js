@@ -38,8 +38,7 @@ server.get("/api/hello", (req, res) => {
 server.get("/api/users", (req, res) => {
     users.findAll()
         .then(result => {
-            // res.json(result)
-            res.send(`<p> ${result} </p>`)
+            res.json(result)
         })
         .catch(() => {
             res.status(500).json({
@@ -47,6 +46,34 @@ server.get("/api/users", (req, res) => {
             })
         })
 })
+
+server.post("/api/register", (req, res) => {
+    users.create(req.body)
+        .then(result => {
+            res.status(201).json(result)
+        })
+        .catch((err) => {
+            res.status(500).json({
+                message: "Something odd happened."
+            })
+        })
+})
+
+server.post("/api/login", (req, res) => {
+    users.FindUser(req.body)
+        .then(result => {
+            console.log("success")
+            res.send(`<h1> Welcome ${req.body.username}!</h1>`)
+        })
+        .catch(() => {
+            res.status(500).json({
+                message: "Something odd happened."
+            })
+        })
+
+})
+
+
 
 /*
 server.use("*", (req, res) => {
